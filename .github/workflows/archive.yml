@@ -1,0 +1,41 @@
+name: archive
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'  # every 1st of the month
+
+jobs:
+  archive:
+    runs-on: macOS-latest
+    env:
+      TWITTER_CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
+      TWITTER_CONSUMER_API_SECRET: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
+      TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+      TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-pandoc@v2
+      - name: Install R packages
+        run: Rscript -e 'install.packages(c("rtweet", "DT", "dplyr", "flexdashboard"), dependencies = TRUE)'
+      - name: Create archive
+        run: Rscript scripts/get_tweets.R
+      - name: Commit and push data if changed
+        run: |-
+          git diff
+          git config --global user.email "readme-bot@example.com"
+          git config --global user.name "README-bot"
+          git add -A
+          git commit -m "Updated data" || exit 0
+          git push
+      - name: Render data table
+        run: Rscript -e "rmarkdown::render('index.Rmd')"
+      - name: Commit and push if changed
+        run: |-
+          git diff
+          git config --global user.email "readme-bot@example.com"
+          git config --global user.name "README-bot"
+          git add -A
+          git commit -m "Updated content" || exit 0
+          git push
