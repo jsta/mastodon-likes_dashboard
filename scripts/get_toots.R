@@ -1,6 +1,6 @@
 # ---- setup ----
-library(rtweet)
-
+library(rtoot)
+# auth_setup("mas.to", "user")
 
 
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
@@ -31,25 +31,25 @@ read_latest <- function() {
 }
 
 # ---- get tweets ----
-outfile <- file.path("data", paste0(Sys.Date(), "_jjstache_likes.rds"))
+outfile <- file.path("data", paste0(Sys.Date(), "_jsta_likes.rds"))
 print(outfile)
 if (!file.exists(outfile)) {
-  jjstache_likes <- get_favorites("__jsta", n = 1000)
-  jjstache_likes <- jjstache_likes[
-    order(jjstache_likes$created_at, decreasing = TRUE), ]
+  # auth_setup()
+  jsta_likes <- rtoot::get_account_favourites()
+  jsta_likes <- jsta_likes[
+    order(jsta_likes$created_at, decreasing = TRUE), ]
 
   dt <- read_latest()
   i_archive_start <- ifelse( # in case i == 1 has been deleted (#6)
-    length(which(jjstache_likes$id_str == dt[1, "status_id"])) == 0,
-    which(jjstache_likes$id_str == dt[2, "status_id"]),
-    which(jjstache_likes$id_str == dt[1, "status_id"]))
-  dt2 <- jjstache_likes[1:i_archive_start, ]
+    length(which(jsta_likes$id_str == dt[1, "status_id"])) == 0,
+    which(jsta_likes$id_str == dt[2, "status_id"]),
+    which(jsta_likes$id_str == dt[1, "status_id"]))
+  dt2 <- jsta_likes[1:i_archive_start, ]
 
   # dt2 <- dplyr::select(dt2, -media_url, -mentions_screen_name,
   #   -mentions_user_id,
   #   -hashtags)
 
-  dt2$quoted_status_id <- as.character(dt2$quoted_status_id)
   res <- dplyr::bind_rows(dt2, dt)
 
   saveRDS(res, outfile)

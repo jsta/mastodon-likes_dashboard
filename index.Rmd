@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(DT)
+library(stringr)
 ```
 
 
@@ -46,6 +47,14 @@ createLink <- function(x) {
   }
 }
 
+dt$content <- purrr::map_chr(dt$content, ~ rvest::html_text2(rvest::read_html(.)))
+
+get_url <- function(x) {
+  # x <- dt[10,]$content
+  str_extract(x, "(https?:\\/\\/[^ ]*)")
+}
+
+dt$urls_expanded_url <- lapply(dt$content, function(x) sapply(x, get_url))
 dt$urls_expanded_url <- lapply(dt$urls_expanded_url, function(x) sapply(x, createLink))
 
 other_url_rows <- unlist(lapply(dt$urls_expanded_url, function(x) {
@@ -59,7 +68,8 @@ dt$urls_expanded_url[other_url_rows] <-
 
 dt$created_at <- format(dt$created_at, "%Y-%m-%d")
 
-dt <- dplyr::select(dt, created_at, screen_name, text, urls_expanded_url)
+dt$screen_name <- unlist(lapply(dt$account, function(x) gsub("https://", "", data.frame(x)$url)))
+dt <- dplyr::select(dt, created_at, screen_name, content, urls_expanded_url)
 
 dt_table <- DT::datatable(dt,
   options = list( # dom = 't',
