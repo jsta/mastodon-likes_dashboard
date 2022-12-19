@@ -7,7 +7,7 @@ library(rtoot)
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
   auth_setup(clipboard = TRUE)
 } else {
-  auth_setup_default()
+  # auth_setup_default()
 }
 
 read_latest <- function() {
@@ -21,7 +21,7 @@ read_latest <- function() {
   dt <- readRDS(archives[which.max(dates)])
   dt <- data.frame(dt)
 
-  dt <- dplyr::mutate(dt, status_id = dplyr::coalesce(status_id, as.character(id)))
+  # dt <- dplyr::mutate(dt, status_id = dplyr::coalesce(status_id, as.character(id)))
   dt
 }
 
@@ -36,9 +36,9 @@ if (!file.exists(outfile)) {
 
   dt <- read_latest()
   i_archive_start <- ifelse( # in case i == 1 has been deleted (#6)
-    length(which(jsta_likes$id_str == dt[1, "status_id"])) == 0,
-    which(jsta_likes$id_str == dt[2, "status_id"]),
-    which(jsta_likes$id_str == dt[1, "status_id"]))
+    length(which(jsta_likes$id == dt[1, "id"])) == 0,
+    which(jsta_likes$id == dt[2, "id"]),
+    which(jsta_likes$id == dt[1, "id"]))
   dt2 <- jsta_likes[1:i_archive_start, ]
 
   # dt2 <- dplyr::select(dt2, -media_url, -mentions_screen_name,
