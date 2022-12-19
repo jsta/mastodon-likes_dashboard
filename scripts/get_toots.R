@@ -1,16 +1,11 @@
 # ---- setup ----
 library(rtoot)
 # auth_setup("mas.to", "user")
-
+# token <- readRDS(file.path(tools::R_user_dir("rtoot", "config"), "rtoot_token.rds"))
+# content <- convert_token_to_envvar(token)
 
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
-  dashboard_token <- rtweet::rtweet_bot(
-    api_key =    Sys.getenv("TWITTER_CONSUMER_API_KEY"),
-    api_secret = Sys.getenv("TWITTER_CONSUMER_API_SECRET"),
-    access_token =    Sys.getenv("TWITTER_ACCESS_TOKEN"),
-    access_secret =   Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
-  )
-  auth_as(dashboard_token)
+  auth_setup(clipboard = TRUE)
 } else {
   auth_setup_default()
 }
