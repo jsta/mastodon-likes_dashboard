@@ -5,7 +5,7 @@ library(rtoot)
 # content <- convert_token_to_envvar(token)
 
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
-  auth_setup(clipboard = TRUE)
+  # auth_setup(clipboard = TRUE)
 } else {
   # auth_setup_default()
 }
