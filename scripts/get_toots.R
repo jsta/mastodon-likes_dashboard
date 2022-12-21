@@ -5,7 +5,7 @@ library(rtoot)
 
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
   # auth_setup(clipboard = TRUE)
-  verify_envvar()
+  # verify_envvar()
 } else {
   # auth_setup_default()
 }
