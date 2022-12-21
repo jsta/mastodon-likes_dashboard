@@ -16,6 +16,10 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
       - name: Install R packages
         run: Rscript -e 'install.packages(c("rtoot", "DT", "dplyr", "flexdashboard"), dependencies = TRUE)'
+      - name: Setup config
+        run: |
+          echo '${{ secrets.RTOOT_TOKEN }}' >> token_bearer.secret
+          Rscript create_token.R
       - name: Create archive
         run: Rscript scripts/get_toots.R
       - name: Commit and push data if changed

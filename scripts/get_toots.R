@@ -2,7 +2,6 @@
 library(rtoot)
 # auth_setup("mas.to", "user")
 # token <- readRDS(file.path(tools::R_user_dir("rtoot", "config"), "rtoot_token.rds"))
-# content <- convert_token_to_envvar(token)
 
 if (!is.null(grep("comp", Sys.info()["nodename"]))) { # not on jsta local system
   # auth_setup(clipboard = TRUE)
