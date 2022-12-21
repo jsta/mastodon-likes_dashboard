@@ -19,6 +19,7 @@ jobs:
       - name: Setup config
         run: |
           echo '${{ secrets.RTOOT_TOKEN }}' >> token_bearer.secret
+          mkdir -p /Users/runner/Library/Preferences/org.R-project.R/R/rtoot
           Rscript create_token.R
       - name: Create archive
         run: Rscript scripts/get_toots.R
